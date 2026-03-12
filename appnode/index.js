@@ -4,6 +4,7 @@ const port = 3000
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
+
 })
 app.get('/hello', (req, res) => {
     res.sendFile(__dirname + '/hello.html')
