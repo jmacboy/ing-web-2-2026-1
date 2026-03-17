@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Personas</title>
+</head>
+
+<body>
+    <h1>Lista de Personas</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Edad</th>
+                <th>Ciudad</th>
+                <th>Fecha de Nacimiento</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% personas.forEach(persona=> { %>
+                <tr>
+                    <td>
+                        <%= persona.id %>
+                    </td>
+                    <td>
+                        <%= persona.nombre %>
+                    </td>
+                    <td>
+                        <%= persona.apellido %>
+                    </td>
+                    <td>
+                        <%= persona.edad %>
+                    </td>
+                    <td>
+                        <%= persona.ciudad %>
+                    </td>
+                    <td>
+                        <%= persona.fechaNacimiento %>
+                    </td>
+                </tr>
+                <% }) %>
+        </tbody>
+    </table>
+</body>
+
+</html>

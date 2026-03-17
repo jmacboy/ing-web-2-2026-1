@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Persona</title>
+</head>
+
+<body>
+    <h1>Formulario de Persona</h1>
+    <form action="/personas" method="post">
+        <div>
+            <label>Nombre</label>
+            <input type="text" name="nombre">
+        </div>
+        <div>
+            <label>Apellido</label>
+            <input type="text" name="apellido">
+        </div>
+        <div>
+            <label>Edad</label>
+            <input type="number" name="edad">
+        </div>
+        <div>
+            <label>Ciudad</label>
+            <input type="text" name="ciudad">
+        </div>
+        <div>
+            <label>Fecha de Nacimiento</label>
+            <input type="date" name="fechaNacimiento">
+        </div>
+        <button type="submit">Guardar Persona</button>
+    </form>
+</body>
+
+</html>

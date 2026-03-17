@@ -20,11 +20,29 @@ app.get('/hello-ejs', (req, res) => {
     res.render('prueba-ejs', { name: 'Juan', lastName: 'Perez' });
 });
 app.get('/form', (req, res) => {
-    res.render('form-persona');
+    res.render('form-ejemplo');
 });
 app.post('/form-submit', (req, res) => {
     const { name, lastName } = req.body;
     res.render('prueba-ejs', { name, lastName });
+});
+app.get('/personas', async (req, res) => {
+    const personas = await db.persona.findAll();
+    res.render('personas/list-persona', { personas });
+});
+app.get('/personas/create', (req, res) => {
+    res.render('personas/form-persona');
+});
+app.post('/personas', async (req, res) => {
+    const { nombre, apellido, edad, ciudad, fechaNacimiento } = req.body;
+    const persona = await db.persona.create({
+        nombre,
+        apellido,
+        edad,
+        ciudad,
+        fechaNacimiento
+    });
+    res.redirect('/personas');
 });
 
 // Para habilitar la BD
