@@ -31,9 +31,9 @@ app.get('/personas', async (req, res) => {
     res.render('personas/list-persona', { personas });
 });
 app.get('/personas/create', (req, res) => {
-    res.render('personas/form-persona');
+    res.render('personas/form-persona', { persona: null });
 });
-app.post('/personas', async (req, res) => {
+app.post('/personas/create', async (req, res) => {
     const { nombre, apellido, edad, ciudad, fechaNacimiento } = req.body;
     const persona = await db.persona.create({
         nombre,
@@ -42,6 +42,29 @@ app.post('/personas', async (req, res) => {
         ciudad,
         fechaNacimiento
     });
+    res.redirect('/personas');
+});
+app.get('/personas/:id', async (req, res) => {
+    const { id } = req.params;
+    const persona = await db.persona.findByPk(id);
+    res.render('personas/form-persona', { persona });
+});
+app.post('/personas/:id', async (req, res) => {
+    const { id } = req.params;
+    const { nombre, apellido, edad, ciudad, fechaNacimiento } = req.body;
+    const persona = await db.persona.findByPk(id);
+    persona.nombre = nombre;
+    persona.apellido = apellido;
+    persona.edad = edad;
+    persona.ciudad = ciudad;
+    persona.fechaNacimiento = fechaNacimiento;
+    await persona.save();
+    res.redirect('/personas');
+});
+app.post('/personas/:id/delete', async (req, res) => {
+    const { id } = req.params;
+    const persona = await db.persona.findByPk(id);
+    await persona.destroy();
     res.redirect('/personas');
 });
 

@@ -1,37 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('../components/header.ejs') %>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Persona</title>
-</head>
-
-<body>
-    <h1>Formulario de Persona</h1>
-    <form action="/personas" method="post">
-        <div>
-            <label>Nombre</label>
-            <input type="text" name="nombre">
+    <div class="container">
+        <div class="row mt-2 mb-2">
+            <div class="col-8 offset-2">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">
+                            <h1>Formulario de Persona</h1>
+                        </div>
+                        <form action="" method="post">
+                            <div class="mb-2">
+                                <label class="form-label" for="nombre">Nombre</label>
+                                <input class="form-control" type="text" name="nombre" id="nombre"
+                                    value="<%=persona?.nombre %>">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label" for="apellido">Apellido</label>
+                                <input class="form-control" type="text" name="apellido" id="apellido"
+                                    value="<%=persona?.apellido %>">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label" for="edad">Edad</label>
+                                <input class="form-control" type="number" name="edad" id="edad"
+                                    value="<%=persona?.edad %>">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label" for="ciudad">Ciudad</label>
+                                <input class="form-control" type="text" name="ciudad" id="ciudad"
+                                    value="<%=persona?.ciudad %>">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label" for="fechaNacimiento">Fecha de Nacimiento</label>
+                                <input class="form-control" type="date" name="fechaNacimiento" id="fechaNacimiento"
+                                    value="<%=persona?.fechaNacimiento?.toISOString().split('T')[0] %>">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Guardar Persona</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div>
-            <label>Apellido</label>
-            <input type="text" name="apellido">
-        </div>
-        <div>
-            <label>Edad</label>
-            <input type="number" name="edad">
-        </div>
-        <div>
-            <label>Ciudad</label>
-            <input type="text" name="ciudad">
-        </div>
-        <div>
-            <label>Fecha de Nacimiento</label>
-            <input type="date" name="fechaNacimiento">
-        </div>
-        <button type="submit">Guardar Persona</button>
-    </form>
-</body>
-
-</html>
+    </div>
+    <%- include('../components/footer.ejs') %>
