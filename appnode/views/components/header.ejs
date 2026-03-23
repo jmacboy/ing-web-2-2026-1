@@ -34,8 +34,10 @@
                         </ul>
                     </li>
                 </ul>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+                <!-- <form class="d-flex" role="search" onSubmit="return onSearchClick(event)"> -->
+                <form class="d-flex" role="search" action="/search" method="get">
+                    <input id="searchBox" class="form-control me-2" type="search" placeholder="Search"
+                        aria-label="Search" name="q" />
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
             </div>

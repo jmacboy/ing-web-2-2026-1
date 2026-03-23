@@ -3,6 +3,7 @@ const app = express()
 const port = 3000
 const bodyParser = require('body-parser');
 const db = require('./models');
+const { Op } = require('sequelize');
 
 app.set('view engine', 'ejs');
 
@@ -66,6 +67,27 @@ app.post('/personas/:id/delete', async (req, res) => {
     const persona = await db.persona.findByPk(id);
     await persona.destroy();
     res.redirect('/personas');
+});
+
+app.get('/search', async (req, res) => {
+    const { q } = req.query;
+    const personas = await db.persona.findAll({
+        where: {
+            [Op.or]: [
+                {
+                    nombre: {
+                        [Op.like]: `%${q}%`
+                    }
+                },
+                {
+                    apellido: {
+                        [Op.like]: `%${q}%`
+                    }
+                }
+            ]
+        }
+    });
+    res.render('personas/list-persona', { personas });
 });
 
 // Para habilitar la BD
