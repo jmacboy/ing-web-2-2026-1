@@ -1,4 +1,5 @@
 const { Op } = require("sequelize")
+const { checkUser } = require("../middlewares/check-user")
 
 module.exports = (app, db) => {
 
@@ -20,7 +21,7 @@ module.exports = (app, db) => {
         const { name, lastName } = req.body;
         res.render('prueba-ejs', { name, lastName });
     });
-    app.get('/search', async (req, res) => {
+    app.get('/search', checkUser, async (req, res) => {
         const { q } = req.query;
         const personas = await db.persona.findAll({
             where: {

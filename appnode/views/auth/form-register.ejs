@@ -6,9 +6,9 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="card-title">
-                            <h1>Inicio de sesión</h1>
+                            <h1>Registro</h1>
                         </div>
-                        <form action="" method="post">
+                        <form action="/register" method="post">
                             <%- include('../components/error-panel.ejs') %>
                                 <div class="mb-2">
                                     <label class="form-label" for="email">Email</label>
@@ -18,7 +18,11 @@
                                     <label class="form-label" for="password">Password</label>
                                     <input class="form-control" type="password" name="password" id="password">
                                 </div>
-                                <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+                                <div class="mb-2">
+                                    <label class="form-label" for="nombreCompleto">Nombre completo</label>
+                                    <input class="form-control" type="text" name="nombreCompleto" id="nombreCompleto">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Registrarse</button>
                         </form>
                     </div>
                 </div>
