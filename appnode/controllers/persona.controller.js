@@ -1,45 +1,30 @@
-const { checkUser } = require("../middlewares/check-user");
+const { getPersonaById, createPersona, getPersonaList, deletePersona, updatePersona } = require("../services/personas.service");
 
-module.exports = (app, db) => {
-    app.get('/personas', checkUser, async (req, res) => {
-        const personas = await db.persona.findAll();
-        res.render('personas/list-persona', { personas });
-    });
-    app.get('/personas/create', checkUser, (req, res) => {
-        res.render('personas/form-persona', { persona: null });
-    });
-    app.post('/personas/create', checkUser, async (req, res) => {
-        const { nombre, apellido, edad, ciudad, fechaNacimiento } = req.body;
-        const persona = await db.persona.create({
-            nombre,
-            apellido,
-            edad,
-            ciudad,
-            fechaNacimiento
-        });
-        res.redirect('/personas');
-    });
-    app.get('/personas/:id', checkUser, async (req, res) => {
-        const { id } = req.params;
-        const persona = await db.persona.findByPk(id);
-        res.render('personas/form-persona', { persona });
-    });
-    app.post('/personas/:id', checkUser, async (req, res) => {
-        const { id } = req.params;
-        const { nombre, apellido, edad, ciudad, fechaNacimiento } = req.body;
-        const persona = await db.persona.findByPk(id);
-        persona.nombre = nombre;
-        persona.apellido = apellido;
-        persona.edad = edad;
-        persona.ciudad = ciudad;
-        persona.fechaNacimiento = fechaNacimiento;
-        await persona.save();
-        res.redirect('/personas');
-    });
-    app.post('/personas/:id/delete', checkUser, async (req, res) => {
-        const { id } = req.params;
-        const persona = await db.persona.findByPk(id);
-        await persona.destroy();
-        res.redirect('/personas');
-    });
-}
+exports.personasGet = async (req, res) => {
+    const personas = await getPersonaList();
+    res.render('personas/list-persona', { personas });
+};
+exports.personaCreateGet = (req, res) => {
+    res.render('personas/form-persona', { persona: null });
+};
+exports.personaCreatePost = async (req, res) => {
+    const { nombre, apellido, edad, ciudad, fechaNacimiento } = req.body;
+    const persona = await createPersona(nombre, apellido, edad, ciudad, fechaNacimiento);
+    res.redirect('/personas');
+};
+exports.personaUpdateGet = async (req, res) => {
+    const { id } = req.params;
+    const persona = await getPersonaById(id);
+    res.render('personas/form-persona', { persona });
+};
+exports.personaUpdatePost = async (req, res) => {
+    const { id } = req.params;
+    const { nombre, apellido, edad, ciudad, fechaNacimiento } = req.body;
+    const persona = await updatePersona(id, nombre, apellido, edad, ciudad, fechaNacimiento);
+    res.redirect('/personas');
+};
+exports.personaDelete = async (req, res) => {
+    const { id } = req.params;
+    await deletePersona(id);
+    res.redirect('/personas');
+};
