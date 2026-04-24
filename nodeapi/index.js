@@ -1,3 +1,8 @@
+const result = require('dotenv').config()
+// if (result.error) {
+//     throw result.error
+// }
+
 const express = require('express')
 const app = express()
 const port = 3000
