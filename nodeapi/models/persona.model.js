@@ -20,7 +20,11 @@ module.exports = (sequelize) => {
             },
             fechaNacimiento: {
                 type: DataTypes.DATE,
-            }
+            },
+            usuarioId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
         },
     );
     return Persona;

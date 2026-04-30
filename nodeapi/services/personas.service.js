@@ -3,13 +3,14 @@ const personaService = {
     getObjectList: async () => {
         return db.persona.findAll();
     },
-    createObject: async ({ nombre, apellido, edad, ciudad, fechaNacimiento }) => {
+    createObject: async ({ nombre, apellido, edad, ciudad, fechaNacimiento, usuarioId }) => {
         return await db.persona.create({
             nombre,
             apellido,
             edad,
             ciudad,
-            fechaNacimiento
+            fechaNacimiento,
+            usuarioId
         });
     },
     getById: async (id) => {

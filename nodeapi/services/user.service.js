@@ -1,19 +1,21 @@
 const db = require("../models");
-exports.findUserById = async (id) => {
-    return await db.usuario.findByPk(id);
-}
+const userService = {
+    findUserById: async (id) => {
+        return await db.usuario.findByPk(id);
+    },
+    findUserByEmail: async (email) => {
+        return await db.usuario.findOne({
+            where: {
+                email
+            }
+        });
+    },
+    createUser: async (email, password) => {
+        return await db.usuario.create({
+            email,
+            password: password
 
-exports.findUserByEmail = async (email) => {
-    return await db.usuario.findOne({
-        where: {
-            email
-        }
-    });
-}
-exports.createUser = async (email, password, nombreCompleto) => {
-    return await db.usuario.create({
-        email,
-        password: password,
-        nombreCompleto
-    });
-}
+        });
+    }
+};
+module.exports = userService;
