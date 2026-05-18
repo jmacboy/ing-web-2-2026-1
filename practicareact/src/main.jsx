@@ -10,7 +10,8 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<PersonaList />} />
-        <Route path="/form" element={<FormUsuario />} />
+        <Route path="/personas/create" element={<FormUsuario />} />
+        <Route path="/personas/:id" element={<FormUsuario />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

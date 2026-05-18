@@ -37,3 +37,15 @@ exports.postLogin = async (req, res) => {
     });
     res.status(200).json({ token });
 }
+exports.putUserUpdate = async (req, res) => {
+    const { id } = req.params;
+
+    const user = await userService.updateObject(id, req.body.email);
+    const persona = await personaService.updateObject(req.obj.persona.id, req.body);
+    res.json(await userService.getById(id));
+};
+exports.deleteUser = async (req, res) => {
+    const { id } = req.params;
+    const user = await userService.deleteObject(id);
+    res.json(user);
+}

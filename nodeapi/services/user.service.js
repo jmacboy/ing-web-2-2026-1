@@ -1,10 +1,12 @@
 const db = require("../models");
 const userService = {
-    findUserById: async (id) => {
-        return await db.usuario.findByPk(id);
+    getById: async (id) => {
+        return await db.usuario.findByPk(id, {
+            include: ["persona"]
+        });
     },
     findUserByEmail: async (email) => {
-        return await db.usuario.findOne({
+        return await db.usuario.scope('withPassword').findOne({
             where: {
                 email
             }
@@ -16,6 +18,15 @@ const userService = {
             password: password
 
         });
+    },
+    updateObject: async (id, email) => {
+        const user = await userService.getById(id);
+        user.email = email;
+        return await user.save();
+    },
+    deleteObject: async (id) => {
+        const user = await userService.getById(id);
+        return await user.destroy();
     }
 };
 module.exports = userService;

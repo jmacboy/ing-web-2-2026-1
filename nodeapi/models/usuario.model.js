@@ -14,7 +14,16 @@ module.exports = (sequelize) => {
                 type: DataTypes.STRING,
                 allowNull: false
             },
+        }, {
+        defaultScope: {
+            attributes: { exclude: ['password'] }
         },
+        scopes: {
+            withPassword: {
+                attributes: { include: ['password'] },
+            }
+        }
+    }
     );
     return Usuario;
 }

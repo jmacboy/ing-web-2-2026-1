@@ -1,7 +1,9 @@
 const db = require("../models");
 const personaService = {
     getObjectList: async () => {
-        return db.persona.findAll();
+        return db.persona.findAll({
+            include: ["usuario"]
+        });
     },
     createObject: async ({ nombre, apellido, edad, ciudad, fechaNacimiento, usuarioId }) => {
         return await db.persona.create({
@@ -14,7 +16,9 @@ const personaService = {
         });
     },
     getById: async (id) => {
-        return await db.persona.findByPk(id);
+        return await db.persona.findByPk(id, {
+            include: ["usuario"]
+        });
     },
     updateObject: async (id, { nombre, apellido, edad, ciudad, fechaNacimiento }) => {
         const persona = await personaService.getById(id);
