@@ -10,6 +10,7 @@ import TrHeader from "../components/TrHeader";
 import Button from "../components/Button";
 import { useNavigate } from "react-router";
 import moment from "moment";
+import { getToken } from "../utils/TokenUtilities";
 
 const PersonaList = () => {
     const [personas, setPersonas] = useState([]);
@@ -18,7 +19,11 @@ const PersonaList = () => {
 
 
     const fetchPersonas = () => {
-        axios.get("http://localhost:3000/personas")
+        axios.get("http://localhost:3000/personas", {
+            headers: {
+                Authorization: `Bearer ${getToken()}`
+            }
+        })
             .then((response) => {
                 console.log(response.data);
                 setPersonas(response.data);
@@ -38,7 +43,11 @@ const PersonaList = () => {
         if (!confirm) {
             return;
         }
-        axios.delete(`http://localhost:3000/auth/${persona.id}`)
+        axios.delete(`http://localhost:3000/auth/${persona.id}`, {
+            headers: {
+                Authorization: `Bearer ${getToken()}`
+            }
+        })
             .then(() => {
                 fetchPersonas();
             })

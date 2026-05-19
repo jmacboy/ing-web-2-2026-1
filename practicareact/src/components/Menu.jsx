@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
+import { getToken, removeToken } from "../utils/TokenUtilities";
 
 
 
@@ -48,6 +49,22 @@ const NavItem = ({ href = "#", children, className = "", ...props }) => {
         </li>
     );
 };
+const ButtonItem = ({ onClick, children, className = "", ...props }) => {
+    return (
+        <li>
+            <button
+                onClick={onClick}
+                className={`
+            text-white hover:text-gray-300 cursor-pointer
+            ${className}
+          `}
+                {...props}
+            >
+                {children}
+            </button>
+        </li>
+    );
+}
 
 const Dropdown = ({ label, children, className = "" }) => {
     const [open, setOpen] = useState(false);
@@ -109,14 +126,29 @@ const DropdownItem = ({
 };
 
 const Menu = () => {
+    const token = getToken();
+    const navigate = useNavigate();
     return (
         <Navbar brand="Mi App">
-            <NavItem href="/">Inicio</NavItem>
 
-            <Dropdown label="Personas">
-                <DropdownItem href="/">Lista de Personas</DropdownItem>
-                <DropdownItem href="/personas/create">Formulario de Personas</DropdownItem>
-            </Dropdown>
+            {token ? (
+                <>
+                    <Dropdown label="Personas">
+                        <DropdownItem href="/personas">Lista de Personas</DropdownItem>
+                        <DropdownItem href="/personas/create">Formulario de Personas</DropdownItem>
+                    </Dropdown>
+                    <ButtonItem onClick={() => {
+                        removeToken();
+                        navigate('/');
+                    }}>
+                        Cerrar sesión
+                    </ButtonItem>
+                </>
+            ) :
+                (<>
+                    <NavItem href="/">Iniciar sesión</NavItem>
+                </>)}
+
         </Navbar>
     );
 }

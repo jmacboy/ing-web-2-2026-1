@@ -1,7 +1,7 @@
-const { findUserById } = require("../services/user.service");
+const userService = require("../services/user.service");
 const { verifyToken } = require("../utils/jwt.utils");
 
-const requireAuth = (req, res, next) => {
+const requireAuth = async (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
         return res.status(401).json({ message: "Unauthorized" });
@@ -18,7 +18,7 @@ const requireAuth = (req, res, next) => {
     if (payload.id === undefined) {
         return res.status(401).json({ message: "Unauthorized" });
     }
-    const user = findUserById(payload.id);
+    const user = await userService.getById(payload.id);
     if (!user) {
         return res.status(401).json({ message: "Unauthorized" });
     }

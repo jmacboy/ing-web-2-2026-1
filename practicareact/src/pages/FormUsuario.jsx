@@ -6,6 +6,7 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import Container from "../components/Container";
 import moment from "moment";
+import { getToken } from "../utils/TokenUtilities";
 
 const FormUsuario = () => {
 
@@ -24,7 +25,11 @@ const FormUsuario = () => {
             return;
         }
         const fetchUserById = (id) => {
-            axios.get(`http://localhost:3000/personas/${id}`)
+            axios.get(`http://localhost:3000/personas/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${getToken()}`
+                }
+            })
                 .then((response) => {
                     const persona = response.data;
                     setEmail(persona.usuario.email);
@@ -49,6 +54,10 @@ const FormUsuario = () => {
             fechaNacimiento,
             email,
             password
+        }, {
+            headers: {
+                Authorization: `Bearer ${getToken()}`
+            }
         })
             .then((response) => {
                 console.log('Usuario creado:', response.data);
@@ -67,6 +76,10 @@ const FormUsuario = () => {
             ciudad,
             fechaNacimiento,
             email
+        }, {
+            headers: {
+                Authorization: `Bearer ${getToken()}`
+            }
         })
             .then((response) => {
                 console.log('Usuario actualizado:', response.data);
