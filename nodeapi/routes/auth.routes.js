@@ -13,5 +13,6 @@ module.exports = app => {
     router.post('/login', isJsonRequestValid, schemaValidation(loginUserSchema), controller.postLogin);
     router.put('/update/:id', requireAuth, isJsonRequestValid, getObjectOr404(userService), schemaValidation(updateUserSchema), controller.putUserUpdate);
     router.delete('/:id', requireAuth, getObjectOr404(userService), controller.deleteUser);
+    router.get('/me', requireAuth, controller.me);
     app.use('/auth', router);
 };

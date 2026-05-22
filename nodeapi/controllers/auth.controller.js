@@ -49,3 +49,6 @@ exports.deleteUser = async (req, res) => {
     const user = await userService.deleteObject(id);
     res.json(user);
 }
+exports.me = async (req, res) => {
+    res.json(req.user);
+}

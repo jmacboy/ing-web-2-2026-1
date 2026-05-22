@@ -1,30 +1,40 @@
-import { useState } from "react";
 import Button from "../components/Button";
 import Container from "../components/Container";
 import Input from "../components/Input";
 import Menu from "../components/Menu";
-import axios from "axios";
 import { useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
+import { authService } from "../services/authService";
 import { saveToken } from "../utils/TokenUtilities";
+import * as yup from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
+
+const loginSchema = yup.object({
+    email: yup.string().email("Email inválido").required("El email es requerido"),
+    password: yup.string().min(6, "La contraseña debe tener al menos 6 caracteres").required("La contraseña es requerida"),
+}).required();
 
 const FormLogin = () => {
     const navigate = useNavigate();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const onFormLoginSubmitted = (e) => {
-        e.preventDefault();
-        axios.post("http://localhost:3000/auth/login", {
-            email,
-            password
-        })
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: yupResolver(loginSchema),
+        mode: "onChange" // Validación en tiempo real
+    })
+
+
+    const onFormLoginSubmitted = (data) => {
+        console.log(data);
+        authService.login(data.email, data.password)
             .then((response) => {
-                console.log('Login exitoso:', response.data);
-                saveToken(response.data.token);
+                saveToken(response.token);
                 navigate('/personas');
             })
             .catch((error) => {
-                console.error('Error al iniciar sesión:', error);
-                alert('Error al iniciar sesión');
+                alert("Error al iniciar sesión: " + error.response.data.message);
             });
     }
     return (
@@ -33,22 +43,21 @@ const FormLogin = () => {
             <Container>
 
                 <h1 className="text-xl">Iniciar sesión</h1>
-                <form onSubmit={onFormLoginSubmitted} className="w-xs">
+                <form onSubmit={handleSubmit(onFormLoginSubmitted)} noValidate className="w-xs">
                     <div>
                         <label htmlFor="email">Email:</label>
-                        <Input value={email} type="email" id="email" name="email" required
-                            onChange={(e) => {
-                                setEmail(e.target.value);
-                            }}
+                        <Input type="email" id="email"
+                            {...register("email")}
                         />
+                        {errors.email && <span className="error">{errors.email.message}</span>}
                     </div>
                     <div>
                         <label htmlFor="password">Password:</label>
-                        <Input value={password} type="password" id="password" name="password" required
-                            onChange={(e) => {
-                                setPassword(e.target.value);
-                            }}
+                        <Input type="password" id="password"
+                            aria-invalid={errors.password ? "true" : "false"}
+                            {...register("password")}
                         />
+                        {errors.password && <span className="error">{errors.password.message}</span>}
                     </div>
 
                     <Button variant="primary" type="submit">Iniciar sesión</Button>

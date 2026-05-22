@@ -7,18 +7,33 @@ import Button from "../components/Button";
 import Container from "../components/Container";
 import moment from "moment";
 import { getToken } from "../utils/TokenUtilities";
+import * as yup from 'yup';
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+
+const userSchema = yup.object({
+    email: yup.string().email("Email inválido").required("El email es requerido"),
+    password: yup.string().min(6, "La contraseña debe tener al menos 6 caracteres").required("La contraseña es requerida"),
+    nombre: yup.string().required("El nombre es requerido"),
+    apellido: yup.string().required("El apellido es requerido"),
+    edad: yup.number().typeError('La edad debe ser un número').positive("La edad debe ser un número positivo").integer("La edad debe ser un número entero").required("La edad es requerida"),
+    ciudad: yup.string().required("La ciudad es requerida"),
+    fechaNacimiento: yup.string().required("La fecha de nacimiento es requerida").matches(/^\d{4}-\d{2}-\d{2}$/, "La fecha de nacimiento debe tener el formato YYYY-MM-DD"),
+}).required();
 
 const FormUsuario = () => {
 
     const navigate = useNavigate();
     const { id } = useParams();
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [nombre, setNombre] = useState('')
-    const [apellido, setApellido] = useState('')
-    const [edad, setEdad] = useState('')
-    const [ciudad, setCiudad] = useState('')
-    const [fechaNacimiento, setFechaNacimiento] = useState('')
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        formState: { errors },
+    } = useForm({
+        resolver: yupResolver(userSchema),
+        mode: "onChange"
+    })
 
     useEffect(() => {
         if (!id) {
@@ -32,28 +47,26 @@ const FormUsuario = () => {
             })
                 .then((response) => {
                     const persona = response.data;
-                    setEmail(persona.usuario.email);
-                    setNombre(persona.nombre);
-                    setApellido(persona.apellido);
-                    setEdad(persona.edad);
-                    setCiudad(persona.ciudad);
-                    setFechaNacimiento(
-                        moment.utc(persona.fechaNacimiento).format('YYYY-MM-DD')
-                    );
+                    setValue("email", persona.usuario.email);
+                    setValue("nombre", persona.nombre);
+                    setValue("apellido", persona.apellido);
+                    setValue("edad", persona.edad);
+                    setValue("ciudad", persona.ciudad);
+                    setValue("fechaNacimiento", moment.utc(persona.fechaNacimiento).format('YYYY-MM-DD'));
                 });
         };
         fetchUserById(id);
     }, [id]);
 
-    const registerUser = () => {
+    const registerUser = (data) => {
         axios.post("http://localhost:3000/auth/register", {
-            nombre,
-            apellido,
-            edad,
-            ciudad,
-            fechaNacimiento,
-            email,
-            password
+            nombre: data.nombre,
+            apellido: data.apellido,
+            edad: data.edad,
+            ciudad: data.ciudad,
+            fechaNacimiento: data.fechaNacimiento,
+            email: data.email,
+            password: data.password
         }, {
             headers: {
                 Authorization: `Bearer ${getToken()}`
@@ -68,14 +81,14 @@ const FormUsuario = () => {
                 alert('Error al crear el usuario');
             });
     }
-    const updateUser = () => {
+    const updateUser = (data) => {
         axios.put(`http://localhost:3000/auth/update/${id}`, {
-            nombre,
-            apellido,
-            edad,
-            ciudad,
-            fechaNacimiento,
-            email
+            nombre: data.nombre,
+            apellido: data.apellido,
+            edad: data.edad,
+            ciudad: data.ciudad,
+            fechaNacimiento: data.fechaNacimiento,
+            email: data.email
         }, {
             headers: {
                 Authorization: `Bearer ${getToken()}`
@@ -90,21 +103,12 @@ const FormUsuario = () => {
                 alert('Error al actualizar el usuario');
             });
     }
-    const onFormUsuarioSubmitted = (e) => {
-        e.preventDefault();
-        console.log('Usuario Enviado:', {
-            nombre,
-            apellido,
-            edad,
-            ciudad,
-            fechaNacimiento,
-            email,
-            password
-        });
+    const onFormUsuarioSubmitted = (data) => {
+        console.log('Usuario Enviado:', data);
         if (id) {
-            updateUser();
+            updateUser(data);
         } else {
-            registerUser();
+            registerUser(data);
         }
 
     }
@@ -114,65 +118,60 @@ const FormUsuario = () => {
             <Container>
 
                 <h1 className="text-xl">Formulario de Usuario</h1>
-                <form onSubmit={onFormUsuarioSubmitted}>
+                <form onSubmit={handleSubmit(onFormUsuarioSubmitted)} noValidate className="w-xs">
                     <div>
                         <label htmlFor="email">Email:</label>
-                        <Input value={email} type="email" id="email" name="email" required
-                            onChange={(e) => {
-                                setEmail(e.target.value);
-                            }}
+                        <Input type="email" id="email" name="email"
+                            {...register("email")}
                         />
+                        {errors.email && <span className="error">{errors.email.message}</span>}
+
                     </div>
                     {!id && (
                         <div>
                             <label htmlFor="password">Password:</label>
-                            <Input value={password} type="password" id="password" name="password" required
-                                onChange={(e) => {
-                                    setPassword(e.target.value);
-                                }}
+                            <Input type="password" id="password"
+                                {...register("password")}
                             />
+                            {errors.password && <span className="error">{errors.password.message}</span>}
                         </div>
                     )}
                     <div>
                         <label htmlFor="nombre">Nombre:</label>
-                        <Input value={nombre} type="text" id="nombre" name="nombre" required
-                            onChange={(e) => {
-                                setNombre(e.target.value);
-                            }}
+                        <Input type="text" id="nombre"
+                            {...register("nombre")}
                         />
-                        El nombre es: {nombre}
+                        {errors.nombre && <span className="error">{errors.nombre.message}</span>}
                     </div>
                     <div>
                         <label htmlFor="apellido">Apellido:</label>
-                        <Input value={apellido} type="text" id="apellido" name="apellido" required
-                            onChange={(e) => {
-                                setApellido(e.target.value);
-                            }}
+                        <Input type="text" id="apellido"
+                            {...register("apellido")}
                         />
+                        {errors.apellido && <span className="error">{errors.apellido.message}</span>}
                     </div>
                     <div>
                         <label htmlFor="edad">Edad:</label>
-                        <Input value={edad} type="number" id="edad" name="edad" required
-                            onChange={(e) => {
-                                setEdad(e.target.value);
-                            }}
+                        <Input type="number" id="edad"
+                            {...register("edad")}
+
                         />
+                        {errors.edad && <span className="error">{errors.edad.message}</span>}
                     </div>
                     <div>
                         <label htmlFor="ciudad">Ciudad:</label>
-                        <Input value={ciudad} type="text" id="ciudad" name="ciudad" required
-                            onChange={(e) => {
-                                setCiudad(e.target.value);
-                            }}
+                        <Input type="text" id="ciudad"
+                            {...register("ciudad")}
                         />
+                        {errors.ciudad && <span className="error">{errors.ciudad.message}</span>}
                     </div>
                     <div>
                         <label htmlFor="fechaNacimiento">Fecha de nacimiento:</label>
-                        <Input value={fechaNacimiento} type="date" id="fechaNacimiento" name="fechaNacimiento" required
-                            onChange={(e) => {
-                                setFechaNacimiento(e.target.value);
-                            }}
+                        <Input type="date" id="fechaNacimiento"
+                            {...register("fechaNacimiento")}
+
                         />
+                        {errors.fechaNacimiento && <span className="error">{errors.fechaNacimiento.message}</span>}
                     </div>
                     <Button variant="primary" type="submit">Enviar</Button>
                 </form>

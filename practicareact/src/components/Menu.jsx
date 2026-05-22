@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router";
 import { getToken, removeToken } from "../utils/TokenUtilities";
+import { authService } from "../services/authService";
+import { useAuth } from "../hooks/useAuth";
 
 
 
@@ -49,6 +51,7 @@ const NavItem = ({ href = "#", children, className = "", ...props }) => {
         </li>
     );
 };
+//eslint-disable-next-line no-unused-vars
 const ButtonItem = ({ onClick, children, className = "", ...props }) => {
     return (
         <li>
@@ -56,8 +59,7 @@ const ButtonItem = ({ onClick, children, className = "", ...props }) => {
                 onClick={onClick}
                 className={`
             text-white hover:text-gray-300 cursor-pointer
-            ${className}
-          `}
+            ${className}`}
                 {...props}
             >
                 {children}
@@ -124,10 +126,28 @@ const DropdownItem = ({
         </li>
     );
 };
+const DropdownButtonItem = ({ onClick, children, className = "", ...props }) => {
+    return (
+        <li>
+            <button
+                onClick={onClick}
+                className={`
+            block px-4 py-2 text-sm
+            text-gray-700
+            hover:bg-gray-100
+            ${className}
+          `}
+                {...props}
+            >
+                {children}
+            </button>
+        </li>
+    );
+}
 
 const Menu = () => {
-    const token = getToken();
-    const navigate = useNavigate();
+    const { token, user, logout } = useAuth();
+
     return (
         <Navbar brand="Mi App">
 
@@ -137,12 +157,13 @@ const Menu = () => {
                         <DropdownItem href="/personas">Lista de Personas</DropdownItem>
                         <DropdownItem href="/personas/create">Formulario de Personas</DropdownItem>
                     </Dropdown>
-                    <ButtonItem onClick={() => {
-                        removeToken();
-                        navigate('/');
-                    }}>
-                        Cerrar sesión
-                    </ButtonItem>
+                    <Dropdown label={user?.persona.nombre + " " + user?.persona.apellido || "Usuario"}>
+                        <DropdownButtonItem onClick={() => {
+                            logout();
+                        }}>
+                            Cerrar sesión
+                        </DropdownButtonItem>
+                    </Dropdown>
                 </>
             ) :
                 (<>
